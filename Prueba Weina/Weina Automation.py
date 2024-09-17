@@ -2,11 +2,9 @@ import time
 from getpass import getpass
 from datetime import datetime, timedelta
 
-# In-memory storage with predefined users
 users = {
-    "admin": "admin123",
-    "Predrito_Gonzalez": "password",
-    "Maria_Lopez": "mypassword"
+    "pedrito_gonzalez": "pedrito123",
+    "maria_lopez": "maria456"
 }
 
 events = {}
@@ -81,13 +79,14 @@ def share_event(user):
     except ValueError:
         print("Invalid event ID, please try again.")
 
-def check_reminders():
+def check_reminders(user):
     current_time = datetime.now()
     for event_id, event in events.items():
         event_time = event.start_time
         reminder_time = event_time - timedelta(minutes=event.reminder_time)
         if reminder_time <= current_time <= event_time:
-            print(f"Reminder: Event '{event.title}' starts soon!")
+            if event.owner == user or user in event.shared_with:
+                print(f"Reminder: Event '{event.title}' starts soon!")
 
 def main():
     print("Welcome to the Event Scheduler and Reminder System")
@@ -114,14 +113,13 @@ def main():
                     elif user_choice == '3':
                         share_event(user)
                     elif user_choice == '4':
-                        check_reminders()
+                        check_reminders(user)
                     elif user_choice == '5':
                         print("Logged out.")
                         break
         elif choice == '3':
             print("Goodbye!")
             break
-
 
 if __name__ == "__main__":
     main()
